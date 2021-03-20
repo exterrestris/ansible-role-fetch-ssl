@@ -1,0 +1,21 @@
+---
+# Install location for script
+fetch_ssl_script_dir: /usr/local/sbin/
+fetch_ssl_script_name: install-ssh-cert.sh
+
+# Permissions
+fetch_ssl_script_owner: root
+fetch_ssl_script_group: root
+fetch_ssl_script_mode: '0700'
+
+# Copy certificate/key to
+fetch_ssl_tmp_cert: /tmp/fetch_ssl_tmp_cert
+fetch_ssl_tmp_key: /tmp/fetch_ssl_tmp_key
+
+# Cron
+fetch_ssl_cron_name: 'install ssl certificates'
+fetch_ssl_cron_file: 'install-ssl-certificates'
+fetch_ssl_cron_frequency: daily
+
+# Run script immediately
+fetch_ssl_run_now: no

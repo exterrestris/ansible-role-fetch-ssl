@@ -1,0 +1,23 @@
+---
+- name: create script
+  ansible.builtin.template:
+    src: ../templates/install-ssh-cert.sh.j2
+    dest: "{{ fetch_ssl_script_dir }}/{{ fetch_ssl_script_name }}"
+    owner: "{{ fetch_ssl_script_owner }}"
+    group: "{{ fetch_ssl_script_group }}"
+    mode: "{{ fetch_ssl_script_mode }}"
+
+- name: configure cron
+  ansible.builtin.cron:
+    name: "{{ fetch_ssl_cron_name }}"
+    special_time: "{{ fetch_ssl_cron_frequency }}"
+    user: "{{ fetch_ssl_script_owner }}"
+    job: "{{ fetch_ssl_script_dir | regex_replace('\\/$', '') }}/{{ fetch_ssl_script_name }}"
+    cron_file: "{{ fetch_ssl_cron_file }}"
+
+- name: run script
+  ansible.builtin.command:
+    cmd: "{{ fetch_ssl_script_dir }}/{{ fetch_ssl_script_name }}"
+  become: yes
+  become_user: "{{ fetch_ssl_script_owner }}"
+  when: fetch_ssl_run_now
