@@ -1,0 +1,11 @@
+---
+galaxy_info:
+  role_name: fetch_ssl
+  author: Sean Ellingham
+  description: Fetches an SSL certificate and copies it to defined locations
+  issue_tracker_url: https://github.com/exterrestris/ansible-role-fetch-ssl/issues
+  license: MIT
+  min_ansible_version: 2.10
+  galaxy_tags:
+  - ssl
+dependencies: []
