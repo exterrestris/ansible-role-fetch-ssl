@@ -34,6 +34,10 @@ An Ansible role for setting up a cron job to fetch an SSL certificate via SSH an
 | `fetch_ssl_cron_file`         | 'install-ssl-certificate'      | Filename for cron job             |
 | `fetch_ssl_cron_frequency`    | daily                          | Cron frequency                    |
 | `fetch_ssl_run_now`           | no                             | Run script immediately            |
+| `fetch_ssl_generate_ssh_key` | `yes` | Generate an SSH key for script to use | 
+| `fetch_ssl_generated_ssh_key` | `id_fetch_ssl` | Name of generated SSH key | 
+| `fetch_ssl_ssh_key` | `/root/.ssh/{`*`fetch_ssl_generated_ssh_key`*`\|id_rsa}` | Path to SSH key for script to use |
+| `fetch_ssl_ssh_key_install_remote` | `yes` | Install specified SSH key on remote hosts. Requires remote hosts to be defined in inventory |
 
 ## Example - Installing Let's Encrypt wildcard certificate issued to pfSense
 
