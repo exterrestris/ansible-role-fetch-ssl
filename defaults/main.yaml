@@ -19,3 +19,21 @@ fetch_ssl_cron_frequency: daily
 
 # Run script immediately
 fetch_ssl_run_now: no
+
+# Generate a new SSH key for use by script
+fetch_ssl_generate_ssh_key: yes
+
+# Name of generated SSH key
+fetch_ssl_generated_ssh_key: id_fetch_ssl
+
+# Type of generated SSH key
+fetch_ssl_generated_ssh_key_type: 'rsa'
+
+# Number of bits of generated SSH key
+fetch_ssl_generated_ssh_key_bits: 2048
+
+# Path to SSH key
+fetch_ssl_ssh_key: "/root/.ssh/{{ fetch_ssl_generated_ssh_key if fetch_ssl_generate_ssh_key else 'id_rsa' }}"
+
+# Install SSH key on remote hosts
+fetch_ssl_ssh_key_install_remote: yes

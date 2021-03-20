@@ -15,6 +15,24 @@
     job: "{{ fetch_ssl_script_dir | regex_replace('\\/$', '') }}/{{ fetch_ssl_script_name }}"
     cron_file: "{{ fetch_ssl_cron_file }}"
 
+- name: generate SSH key
+  ansible.builtin.user:
+    name: "{{ fetch_ssl_script_owner }}"
+    generate_ssh_key: yes
+    ssh_key_type: "{{ fetch_ssl_generated_ssh_key_type }}"
+    ssh_key_bits: "{{ fetch_ssl_generated_ssh_key_bits }}"
+    ssh_key_file: ".ssh/{{ fetch_ssl_generated_ssh_key }}"
+  register: "user_info"
+  when: fetch_ssl_generate_ssh_key
+
+- name: install SSH key on remote hosts
+  ansible.posix.authorized_key:
+    user: "{{ fetch_ssl_ssh_user }}"
+    state: present
+    key: "{{ user_info.ssh_public_key if fetch_ssl_generate_ssh_key else lookup('file', fetch_ssl_ssh_key) }}"
+  delegate_to: "{{ fetch_ssl_ssh_host }}"
+  when: fetch_ssl_ssh_key_install_remote
+
 - name: run script
   ansible.builtin.command:
     cmd: "{{ fetch_ssl_script_dir }}/{{ fetch_ssl_script_name }}"
