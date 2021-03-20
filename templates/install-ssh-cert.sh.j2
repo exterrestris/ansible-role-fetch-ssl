@@ -1,7 +1,7 @@
 #!/bin/bash
 # Fetch new certificate and key
-scp {{ fetch_ssl_ssh_user }}@{{ fetch_ssl_ssh_host }}:{{ fetch_ssl_ssh_cert_path }} {{ fetch_ssl_tmp_cert }}
-scp {{ fetch_ssl_ssh_user }}@{{ fetch_ssl_ssh_host }}:{{ fetch_ssl_ssh_key_path }} {{ fetch_ssl_tmp_key }}
+scp -i {{ fetch_ssl_ssh_key}} {{ fetch_ssl_ssh_user }}@{{ fetch_ssl_ssh_host }}:{{ fetch_ssl_ssh_cert_path }} {{ fetch_ssl_tmp_cert }}
+scp -i {{ fetch_ssl_ssh_key}} {{ fetch_ssl_ssh_user }}@{{ fetch_ssl_ssh_host }}:{{ fetch_ssl_ssh_key_path }} {{ fetch_ssl_tmp_key }}
 
 if [ -s {{ fetch_ssl_tmp_cert }} ] && [ -s {{ fetch_ssl_tmp_key }} ]; then
 {% for dest in fetch_ssl_install_to %}
