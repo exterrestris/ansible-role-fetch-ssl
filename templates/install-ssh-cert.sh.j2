@@ -1,14 +1,17 @@
 #!/bin/bash
-# Fetch new certificate and key
-scp -i {{ fetch_ssl_ssh_key}} {{ fetch_ssl_ssh_user }}@{{ fetch_ssl_ssh_host }}:{{ fetch_ssl_ssh_cert_path }} {{ fetch_ssl_tmp_cert }}
-scp -i {{ fetch_ssl_ssh_key}} {{ fetch_ssl_ssh_user }}@{{ fetch_ssl_ssh_host }}:{{ fetch_ssl_ssh_key_path }} {{ fetch_ssl_tmp_key }}
+{% for certificate in fetch_ssl_certs %}
+# Fetch {{ certificate.name | default(certificate.cert) }} certificate/key pair
+scp -i {{ fetch_ssl_ssh_key}} {{ fetch_ssl_ssh_user }}@{{ fetch_ssl_ssh_host }}:{{ certificate.cert }} {{ fetch_ssl_tmp_cert }}
+scp -i {{ fetch_ssl_ssh_key}} {{ fetch_ssl_ssh_user }}@{{ fetch_ssl_ssh_host }}:{{ certificate.key }} {{ fetch_ssl_tmp_key }}
 
 if [ -s {{ fetch_ssl_tmp_cert }} ] && [ -s {{ fetch_ssl_tmp_key }} ]; then
-{% for dest in fetch_ssl_install_to %}
+{% for dest in certificate.install_to %}
 cp {{ fetch_ssl_tmp_cert }} {{ dest.cert }}
 cp {{ fetch_ssl_tmp_key }} {{ dest.key }}
 {% endfor %}
 fi
+
+{% endfor %}
 
 # Remove temporary files
 rm -f {{ fetch_ssl_tmp_cert }}
