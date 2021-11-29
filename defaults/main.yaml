@@ -37,3 +37,6 @@ fetch_ssl_ssh_key: "/root/.ssh/{{ fetch_ssl_generated_ssh_key if fetch_ssl_gener
 
 # Install SSH key on remote hosts
 fetch_ssl_ssh_key_install_remote: yes
+
+# Remote host python interpreter
+fetch_ssl_ssh_host_python: "{{ ansible_python_interpreter }}"
