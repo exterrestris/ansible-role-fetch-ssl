@@ -9,6 +9,11 @@ if [ -s {{ fetch_ssl_tmp_cert }} ] && [ -s {{ fetch_ssl_tmp_key }} ]; then
 cp {{ fetch_ssl_tmp_cert }} {{ dest.cert }}
 cp {{ fetch_ssl_tmp_key }} {{ dest.key }}
 {% endfor %}
+
+{% for dest in certificate.send_to %}
+scp -i {{ fetch_ssl_ssh_key}} {{ fetch_ssl_tmp_cert }} {{ dest.user }}@{{ dest.host }}:{{ dest.cert }}
+scp -i {{ fetch_ssl_ssh_key}} {{ fetch_ssl_tmp_key }} {{ dest.user }}@{{ dest.host }}:{{ dest.key }}
+{% endfor %}
 fi
 
 {% endfor %}

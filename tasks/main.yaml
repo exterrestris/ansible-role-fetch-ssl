@@ -26,14 +26,24 @@
   when: fetch_ssl_generate_ssh_key
 
 - name: install SSH key on remote hosts
-  ansible.posix.authorized_key:
-    user: "{{ fetch_ssl_ssh_user }}"
-    state: present
-    key: "{{ user_info.ssh_public_key if fetch_ssl_generate_ssh_key else lookup('file', fetch_ssl_ssh_key) }}"
-  delegate_to: "{{ fetch_ssl_ssh_host }}"
+  block:
+    - ansible.posix.authorized_key:
+        user: "{{ fetch_ssl_ssh_user }}"
+        state: present
+        key: "{{ _fetch_ssl_ssh_key }}"
+      delegate_to: "{{ fetch_ssl_ssh_host }}"
+      vars:
+        ansible_python_interpreter: "{{ fetch_ssl_ssh_host_python }}"
+    - ansible.posix.authorized_key:
+        user: "{{ item.1.user }}"
+        state: present
+        key: "{{ _fetch_ssl_ssh_key }}"
+      delegate_to: "{{ item.1.host }}"
+      loop: "{{ fetch_ssl_certs | subelements('send_to', skip_missing=True) }}"
   when: fetch_ssl_ssh_key_install_remote
   vars:
-    - ansible_python_interpreter: "{{ fetch_ssl_ssh_host_python }}"
+    _fetch_ssl_ssh_key: "{{ user_info.ssh_public_key if fetch_ssl_generate_ssh_key else lookup('file', fetch_ssl_ssh_key) }}"
+
 
 - name: run script
   ansible.builtin.command:

@@ -23,12 +23,21 @@ An Ansible role for setting up a cron job to fetch an SSL certificate via SSH an
 | `cert` | *Required* | Path to the full certificate chain in PEM format |
 | `key` | *Required* | Path to the private key in PEM format |
 | `install_to` | `[]` | List of paths to copy certificates to |
+| `send_to` | `[]` | List of remote paths to copy certificates to |
 
 #### `fetch_ssl_certs[].install_to[]`
 | Variable | Default | Comments |
 | :--- | :--- | :--- |
-| `cert` | *Required* | Destination for the full certificate chain |
-| `key` | *Required* | Destination for the private key |
+| `cert` | *Required* | Local destination path for the full certificate chain |
+| `key` | *Required* | Local destination path for the private key |
+
+#### `fetch_ssl_certs[].send_to[]`
+| Variable | Default | Comments |
+| :--- | :--- | :--- |
+| `host` | *Required* | Remote host to send the certificate to |
+| `user` | *Required* | Username to use on `host` |
+| `cert` | *Required* | Remote destination path for the full certificate chain |
+| `key` | *Required* | Remote destination path for the private key |
 
 #### Script
 
