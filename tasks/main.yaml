@@ -1,4 +1,12 @@
 ---
+- name: ensure user exists
+  ansible.builtin.user:
+    name: "{{ fetch_ssl_script_owner }}"
+    groups:
+      - "{{ fetch_ssl_script_group }}"
+    append: yes
+  register: _fetch_ssl_script_owner_info
+
 - name: create script
   ansible.builtin.template:
     src: ../templates/install-ssh-cert.sh.j2
@@ -44,6 +52,20 @@
   vars:
     _fetch_ssl_ssh_key: "{{ user_info.ssh_public_key if fetch_ssl_generate_ssh_key else lookup('file', fetch_ssl_ssh_key) }}"
 
+- name: add remote hosts to known_hosts
+  block:
+    - ansible.builtin.known_hosts:
+        name: "{{ fetch_ssl_ssh_host }}"
+        key: "{{ lookup('pipe', 'ssh-keyscan -t' + fetch_ssh_ssh_known_hosts_remote_key_type + ' ' + fetch_ssl_ssh_host ) }}"
+        path: "{{ _fetch_ssl_script_owner_info.home }}/.ssh/known_hosts"
+        state: present
+    - ansible.builtin.known_hosts:
+        name: "{{ item.1.host }}"
+        key: "{{ lookup('pipe', 'ssh-keyscan -t' + fetch_ssh_ssh_known_hosts_remote_key_type + ' ' + item.1.host ) }}"
+        path: "{{ _fetch_ssl_script_owner_info.home }}/.ssh/known_hosts"
+        state: present
+      loop: "{{ fetch_ssl_certs | subelements('send_to', skip_missing=True) }}"
+  when: fetch_ssl_ssh_add_remote_to_known_hosts
 
 - name: run script
   ansible.builtin.command:
