@@ -5,15 +5,19 @@ scp -i {{ fetch_ssl_ssh_key}} {{ fetch_ssl_ssh_user }}@{{ fetch_ssl_ssh_host }}:
 scp -i {{ fetch_ssl_ssh_key}} {{ fetch_ssl_ssh_user }}@{{ fetch_ssl_ssh_host }}:{{ certificate.key }} {{ fetch_ssl_tmp_key }}
 
 if [ -s {{ fetch_ssl_tmp_cert }} ] && [ -s {{ fetch_ssl_tmp_key }} ]; then
-{% for dest in certificate.install_to %}
+{% if certificate.install_to is defined %}
+{%  for dest in certificate.install_to %}
 cp {{ fetch_ssl_tmp_cert }} {{ dest.cert }}
 cp {{ fetch_ssl_tmp_key }} {{ dest.key }}
-{% endfor %}
+{%  endfor %}
+{% endif %}
 
-{% for dest in certificate.send_to %}
+{% if certificate.send_to is defined %}
+{%  for dest in certificate.send_to %}
 scp -i {{ fetch_ssl_ssh_key}} {{ fetch_ssl_tmp_cert }} {{ dest.user }}@{{ dest.host }}:{{ dest.cert }}
 scp -i {{ fetch_ssl_ssh_key}} {{ fetch_ssl_tmp_key }} {{ dest.user }}@{{ dest.host }}:{{ dest.key }}
-{% endfor %}
+{%  endfor %}
+{% endif %}
 fi
 
 {% endfor %}
