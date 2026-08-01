@@ -1,0 +1,24 @@
+#!/bin/bash
+{% for certificate in fetch_ssl_certs %}
+# Fetch {{ certificate.name }} certificate/key pair
+wget --header="Authorization: Bearer {{ fetch_ssl_certmate_token }}" \
+  "https://{{ fetch_ssl_certmate_host }}/api/certificates/{{ certificate.name }}/download/fullchain" \
+  -O {{ fetch_ssl_tmp_cert }}
+wget --header="Authorization: Bearer {{ fetch_ssl_certmate_token }}" \
+  "https://{{ fetch_ssl_certmate_host }}/api/certificates/{{ certificate.name }}/download/privkey" \
+  -O {{ fetch_ssl_tmp_key }}
+
+if [ -s {{ fetch_ssl_tmp_cert }} ] && [ -s {{ fetch_ssl_tmp_key }} ]; then
+{% if certificate.install_to is defined %}
+{%  for dest in certificate.install_to %}
+cp {{ fetch_ssl_tmp_cert }} {{ dest.cert }}
+cp {{ fetch_ssl_tmp_key }} {{ dest.key }}
+{%  endfor %}
+{% endif %}
+fi
+
+{% endfor %}
+
+# Remove temporary files
+rm -f {{ fetch_ssl_tmp_cert }}
+rm -f {{ fetch_ssl_tmp_key }}

@@ -1,0 +1,8 @@
+---
+- name: create script
+  ansible.builtin.template:
+    src: ../templates/install-certmate-cert.sh.j2
+    dest: "{{ fetch_ssl_script_dir }}/{{ fetch_ssl_script_name }}"
+    owner: "{{ fetch_ssl_script_owner }}"
+    group: "{{ fetch_ssl_script_group }}"
+    mode: "{{ fetch_ssl_script_mode }}"
