@@ -20,6 +20,9 @@ fetch_ssl_cron_frequency: daily
 # Run script immediately
 fetch_ssl_run_now: no
 
+# Where to fetch certificate from
+fetch_ssl_certificate_source: ssh
+
 # Generate a new SSH key for use by script
 fetch_ssl_generate_ssh_key: yes
 
